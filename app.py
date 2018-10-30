@@ -28,7 +28,7 @@ def index():
     if all != 0:
         rate = str(success / all)
 
-    return render_template('index.html', rate = rate)
+    return render_template('index.html', rate = rate, success = success, all = all)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')

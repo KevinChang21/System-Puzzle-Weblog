@@ -46,8 +46,9 @@ while True:
             channel.basic_publish(exchange='',
                                   routing_key='log-analysis',
                                   body=body)
-        
-    except:
-        print("Unexpected error:" +  sys.exc_info()[0])
+    except Exception as e:
+        print(e)
+    # except:
+    #     print("Unexpected error:" +  sys.exc_info()[0])
     
 connection.close()
