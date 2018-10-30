@@ -32,9 +32,8 @@ cur = conn.cursor()
 # main function that reads from RabbitMQ queue and stores it in database
 def callback(ch, method, properties, body):
     msg = json.loads(body)
-    values = "to_date(\'" + msg['day'] + "\', \'YYYY-MM-DD\')" + ", " + msg['status']
-    sql = """INSERT INTO weblogs (day, status)
-             VALUES (%s);""" % values
+    values = "to_date('{day}', 'YYYY-MM-DD'), {status}, '{source}'".format(day=msg['day'], status=msg['status'], source=msg['source'])
+    sql = "INSERT INTO weblogs (day, status, source) VALUES ({values});".format(values=values)
     cur.execute(sql, body)
     conn.commit()
     

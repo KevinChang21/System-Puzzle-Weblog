@@ -13,22 +13,31 @@ def index():
     conn = psycopg2.connect(host='db', database=os.environ['POSTGRES_DB'], user=os.environ['POSTGRES_USER'], password=os.environ['POSTGRES_PASSWORD'])
     cur = conn.cursor()
 
-    # Get number of all GET requests
-    sql_all = """SELECT COUNT(*) FROM weblogs;"""
+    # Get number of all GET requests of each source
+    sql_all = """SELECT source, COUNT(*) FROM weblogs GROUP BY source"""
     cur.execute(sql_all)
-    all = cur.fetchone()[0]
+    all_stats = dict(cur.fetchall())
 
-    # Get number of all succesful requests
-    sql_success = """SELECT COUNT(*) FROM weblogs WHERE status LIKE \'2__\';"""
+    # Get number of success GET requests of each source
+    sql_success = """SELECT source, COUNT(*) FROM weblogs WHERE status LIKE \'2__\' GROUP BY source;"""
     cur.execute(sql_success)
-    success = cur.fetchone()[0]
+    success_stats = dict(cur.fetchall())
+    
+    default_stats = {
+        'remote': "No entries yet!",
+        'local' : "No entries yet!",
+        'total' : "No entries yet!"
+    }
 
-    # Determine rate if there was at least one request
-    rate = "No entries yet!"
-    if all != 0:
-        rate = str(success / all)
+    # Determine if there was at least one request
+    if not all_stats:
+        all_stats = success_stats = rate_stats = default_stats
+    else:
+        all_stats['total'] = sum(all_stats.values())
+        success_stats['total'] = sum(success_stats.values())
+        rate_stats = {key: success_stats[key]/all_stats[key] if all_stats[key]!=0 else 0 for key in all_stats.keys() & success_stats}
 
-    return render_template('index.html', rate = rate, success = success, all = all)
+    return render_template('index.html', rate = rate_stats, success = success_stats, all = all_stats)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

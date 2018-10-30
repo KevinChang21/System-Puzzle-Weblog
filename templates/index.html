@@ -2,8 +2,31 @@
 <html lang="en">
     <body>
       <h1>Website Availability Rate</h1>
-      <p>The success rate is: {{rate}}</p>
-      <p>The number of success logs is: {{success}}</p>
-      <p>The number of total logs is: {{all}}</p>
+      <table border="1">
+        <tr>
+            <th></th>
+            <th>Local</th>
+            <th>Remote</th>
+            <th>Total</th>
+          </tr>
+          <tr>
+            <th>Success</th>
+            <td>{{success.local}}</td>
+            <td>{{success.remote}}</td>
+            <td>{{success.total}}</td>
+          </tr>
+          <tr>
+            <th>All</th>
+            <td>{{all.local}}</td>
+            <td>{{all.remote}}</td>
+            <td>{{all.total}}</td>
+          </tr>
+          <tr>
+            <th>Rate</th>
+            <td>{{rate.local}}</td>
+            <td>{{rate.remote}}</td>
+            <td>{{rate.total}}</td>
+          </tr>
+      </table>
     </body>
 </html>
